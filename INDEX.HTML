@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Medical Assistant</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== COLOR PALETTE (Medical + Modern) =====
+Primary: #0f766e (teal)
+Accent:  #dc2626 (medical red)
+Background: #f8fafc (light)
+Cards: #ffffff
+Text: #0f172a
+*/
+
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:#f8fafc;
+  color:#0f172a;
+}
+header{
+  background:linear-gradient(135deg,#0f766e,#115e59);
+  color:#ffffff;
+  padding:30px 20px;
+  text-align:center;
+}
+nav{
+  display:flex;
+  justify-content:space-around;
+  background:#ffffff;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+nav a{
+  padding:14px;
+  text-decoration:none;
+  color:#0f172a;
+  font-weight:600;
+}
+nav a i{margin-right:6px;color:#0f766e}
+main{padding:20px}
+.card{
+  background:#ffffff;
+  padding:24px;
+  border-radius:18px;
+  margin-bottom:26px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+.card h2{
+  color:#0f766e;
+  display:flex;
+  gap:10px;
+  align-items:center
+}
+.features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+.feature{
+  background:#f1f5f9;
+  padding:20px;
+  border-radius:16px;
+  text-align:center;
+}
+.feature i{font-size:38px;color:#0f766e;margin-bottom:10px}
+input,textarea{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid #cbd5e1;
+  background:#ffffff;
+  color:#0f172a;
+}
+button{
+  margin-top:14px;
+  background:#0f766e;
+  color:#ffffff;
+  border:none;
+  padding:12px 28px;
+  border-radius:30px;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover{background:#115e59}
+.result{
+  margin-top:16px;
+  background:#f1f5f9;
+  padding:20px;
+  border-left:6px solid #0f766e;
+  border-radius:14px;
+  color:#0f172a;
+  font-size:15px;
+  line-height:1.7;
+}
+.suggestion{
+  color:#0f766e;
+  font-weight:600;
+  cursor:pointer;
+}
+.suggestion:hover{text-decoration:underline}
+footer{
+  background:#0f766e;
+  color:#ffffff;
+  text-align:center;
+  padding:12px;
+}
+#symptomIcons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+.symptomBtn{
+  background:#ffffff;
+  border:1px solid #0f766e;
+  border-radius:12px;
+  padding:8px 14px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:600;
+  color:#0f172a;
+}
+.symptomBtn i{color:#0f766e}
+</style>
+</head>
+<body>
+<header>
+<h1><i class="fa-solid fa-hospital"></i> AI Medical Assistant</h1>
+<p>Easy Health Help for Indian Users</p>
+</header>
+
+<nav>
+<a href="#home"><i class="fa fa-house"></i>Home</a>
+<a href="#symptoms"><i class="fa fa-notes-medical"></i>Symptoms</a>
+<a href="#bmi"><i class="fa fa-weight-scale"></i>BMI</a>
+<a href="#help"><i class="fa fa-comments"></i>Help</a>
+</nav>
+
+<main>
+<section id="home" class="card">
+<h2><i class="fa fa-star"></i> Project Idea</h2>
+<p>This project helps people understand health problems using symptoms. It supports English, Hindi and Hinglish so everyone can use it easily.</p>
+<div class="features">
+<div class="feature"><i class="fa fa-thermometer"></i><p>Symptom Based Check</p></div>
+<div class="feature"><i class="fa fa-language"></i><p>Hindi + Hinglish Support</p></div>
+<div class="feature"><i class="fa fa-heart"></i><p>Basic Health Tools</p></div>
+<div class="feature"><i class="fa fa-user-doctor"></i><p>Doctor Guidance</p></div>
+<div class="feature"><i class="fa fa-microphone"></i><p>Voice Input</p></div>
+<div class="feature"><i class="fa fa-hand-pointer"></i><p>Icon Selection</p></div>
+</div>
+</section>
+
+<section id="emergency" class="card">
+<h2><i class="fa fa-triangle-exclamation"></i> Emergency Warning</h2>
+<p style="color:#ff5252;font-weight:600">⚠️ If you have chest pain, breathing trouble, sudden paralysis, heavy bleeding, very high fever (above 103°F), severe abdominal pain, uncontrolled vomiting, seizures, or unconsciousness — go to the nearest hospital immediately or call emergency services.</p>
+</section>
+
+<section id="symptoms" class="card">
+<h2><i class="fa fa-stethoscope"></i> Symptom Checker <button style="float:right" onclick="startVoice()"><i class="fa fa-microphone"></i></button></h2>
+<h2><i class="fa fa-stethoscope"></i> Symptom Checker</h2>
+<input id="symptomInput" placeholder="Example: bukhar, pet dard ulti, kamzori">
+<p style="font-size:13px;color:#475569;margin-top:6px">Tip: Short words work better (Hindi / Hinglish / English)</p>
+<div id="symptomIcons">
+<button class="symptomBtn" onclick="addSymptom('bukhar')"><i class="fa fa-thermometer"></i>Bukhar</button>
+<button class="symptomBtn" onclick="addSymptom('sardi')"><i class="fa fa-snowflake"></i>Sardi</button>
+<button class="symptomBtn" onclick="addSymptom('khansi')"><i class="fa fa-lungs"></i>Khansi</button>
+<button class="symptomBtn" onclick="addSymptom('pet dard')"><i class="fa fa-stomach"></i>Pet Dard</button>
+<button class="symptomBtn" onclick="addSymptom('sir dard')"><i class="fa fa-head-side-cough"></i>Sir Dard</button>
+<button class="symptomBtn" onclick="addSymptom('pcos')"><i class="fa fa-venus"></i>PCOS</button>
+<button class="symptomBtn" onclick="addSymptom('period')"><i class="fa fa-calendar"></i>Period Problem</button>
+<button class="symptomBtn" onclick="addSymptom('weakness')"><i class="fa fa-bed"></i>Thakaan</button>
+</div>
+<button onclick="checkSymptoms()">Check</button>
+<div id="symptomResult" class="result"></div>
+</section>
+
+<section id="reports" class="card">
+<h2><i class="fa fa-file-medical"></i> Report Checker</h2>
+<input id="bp" placeholder="BP (example: 120/80)">
+<input id="hb" placeholder="Hemoglobin (g/dL)">
+<input id="tsh" placeholder="TSH (mIU/L)">
+<button onclick="checkReports()">Check Reports</button>
+<div id="reportResult" class="result"></div>
+</section>
+
+<section id="bmi" class="card">
+<h2><i class="fa fa-heartbeat"></i> BMI Calculator</h2>
+<input type="number" id="height" placeholder="Height (cm)">
+<input type="number" id="weight" placeholder="Weight (kg)">
+<button onclick="calcBMI()">Calculate</button>
+<div id="bmiResult" class="result"></div>
+</section>
+
+<section id="help" class="card">
+<h2><i class="fa fa-comments"></i> Health Help</h2>
+<textarea id="question" placeholder="Type your question here"></textarea>
+<button onclick="helpUser()">Ask</button>
+<div id="helpResult" class="result"></div>
+</section>
+</main>
+
+<footer>
+BCA Final Project – Role of AI in Medical Appliances
+</footer>
+
+<script>
+// ===== VOICE INPUT =====
+function startVoice(){
+ if(!('webkitSpeechRecognition'in window)){
+  alert('Voice not supported');return;
+ }
+ let rec=new webkitSpeechRecognition();
+ rec.lang='hi-IN';
+ rec.onresult=e=>{
+  document.getElementById('symptomInput').value+=" "+e.results[0][0].transcript;
+  checkSymptoms();
+ };
+ rec.start();
+}
+
+function normalize(t){
+ return t.toLowerCase()
+ .replace(/bukhar|बुखार|fever/g,'fever')
+ .replace(/sardi|जुकाम|cold/g,'cold')
+ .replace(/khansi|खांसी|cough/g,'cough')
+ .replace(/pet dard|पेट दर्द|stomach pain|stomach/g,'stomach')
+ .replace(/ulti|vomiting|vomit|उल्टी/g,'vomit')
+ .replace(/sir dard|सर दर्द|headache/g,'headache')
+ .replace(/period problem|irregular period|पीरियड|mahavari|mens|period/g,'period')
+ .replace(/pcos|pcod/g,'pcos')
+ .replace(/weight gain|motapa|मोटापा/g,'weight')
+ .replace(/kamzori|कमजोरी|weak|weakness|thakaan|थकान|tired/g,'weakness')
+ .replace(/diabetes|sugar|मधुमेह/g,'diabetes')
+ .replace(/bp|blood pressure|high bp|low bp/g,'bp')
+ .replace(/thyroid|थायरॉइड/g,'thyroid')
+ .replace(/acidity|gas|जलन/g,'acidity')
+ .replace(/diarrhea|loose motion|दस्त/g,'diarrhea')
+ .replace(/constipation|kabj|कब्ज/g,'constipation')
+ .replace(/allergy|rash|खुजली/g,'allergy')
+ .replace(/asthma|saans|breathing problem/g,'asthma')
+ .replace(/heart pain|chest pain|dil dard/g,'heart')
+ .replace(/uti|urine infection|jalna/g,'uti')
+ .replace(/kidney|pathri/g,'kidney')
+ .replace(/liver|hepatitis|jaundice|peeliya/g,'liver')
+ .replace(/anemia|kam khoon/g,'anemia')
+ .replace(/migraine/g,'migraine')
+ .replace(/arthritis|joint pain|ghutna dard/g,'arthritis')
+ .replace(/depression|stress|anxiety/g,'mental')
+ .replace(/covid|corona/g,'covid');
+}
+
+function quickFill(word){
+ document.getElementById('symptomInput').value=word;
+ checkSymptoms();
+}
+
+function addSymptom(sym){
+ let input=document.getElementById('symptomInput');
+ if(input.value.includes(sym)) return;
+ if(input.value) input.value+=" ";
+ input.value+=sym;
+}
+
+function checkSymptoms(){
+ let s=normalize(document.getElementById('symptomInput').value);
+ let r="";
+ if(s.includes('fever')&&s.includes('cold')) r="Possible Viral Fever / Cold. Symptoms include body pain, runny nose, mild fever. Home care: complete rest, warm water, light food. Seek doctor if fever lasts more than 2 days.";
+ else if(s.includes('fever')) r="Fever detected. Symptoms may include high temperature, weakness and chills. Home care: drink fluids, take rest, use doctor-prescribed medicine.";
+ else if(s.includes('stomach') && s.includes('vomit')) r="Stomach infection suspected. Symptoms include pet dard, ulti, nausea and weakness. Care: ORS, fluids, light food. Avoid outside food. Consult doctor if vomiting continues or fever appears.";
+ else if(s.includes('stomach')) r="Stomach problem detected. Symptoms may include pain, gas or discomfort. Care: light food, warm water, avoid spicy meals.";
+ else if(s.includes('headache')) r="Headache detected. Causes may include stress, dehydration or eye strain. Home care: rest, water intake and proper sleep.";
+ else if(s.includes('pcos')|| (s.includes('period') && s.includes('weight'))) r="Possible PCOS/PCOD symptoms. Common signs include irregular periods, weight gain, acne and hair growth. Care: healthy diet, daily exercise, stress control. Doctor consultation is important.";
+ else if(s.includes('period')) r="Menstrual problem detected. Symptoms include irregular periods or pain. Care: balanced diet, warm compress, consult doctor if problem continues.";
+ else if(s.includes('weakness')) r="General weakness detected. Causes may include poor diet or dehydration. Care: proper meals, fruits, water and rest.";
+ else if(s.includes('diabetes')) r="Possible Diabetes symptoms. Signs include frequent thirst, urination and tiredness. Care: balanced diet, exercise and regular sugar check. Doctor consultation required.";
+ else if(s.includes('bp')) r="Blood Pressure issue suspected. Symptoms may include headache or dizziness. Care: low salt diet, stress control and regular BP monitoring.";
+ else if(s.includes('thyroid')) r="Thyroid problem suspected. Symptoms may include weight change, fatigue and hair fall. Care: medical tests and doctor guidance.";
+ else if(s.includes('acidity')) r="Acidity or gas problem detected. Symptoms include burning sensation and bloating. Care: avoid spicy food, eat on time.";
+ else if(s.includes('diarrhea')) r="Diarrhea detected. Symptoms include loose motions and weakness. Care: ORS, fluids and light food.";
+ else if(s.includes('constipation')) r="Constipation detected. Symptoms include hard stool and stomach discomfort. Care: fiber-rich food, water intake.";
+ else if(s.includes('allergy')) r="Allergy detected. Symptoms include itching, rashes or sneezing. Care: avoid triggers and consult doctor if severe.";
+ else if(s.includes('asthma')) r="Asthma suspected. Symptoms include breathing difficulty, wheezing and cough. Care: avoid dust/smoke and follow inhaler as prescribed.";
+ else if(s.includes('heart')) r="⚠️ Possible heart-related issue. Chest pain, sweating or breathlessness can be serious. Seek immediate medical help.";
+ else if(s.includes('uti')) r="Urinary Tract Infection suspected. Symptoms include burning urine and frequent urge. Care: drink water and consult doctor.";
+ else if(s.includes('kidney')) r="Kidney problem suspected. Symptoms include back pain or swelling. Care: medical tests and doctor consultation needed.";
+ else if(s.includes('liver')) r="Liver issue suspected. Symptoms include yellow eyes/skin and weakness. Care: avoid alcohol and see a doctor.";
+ else if(s.includes('anemia')) r="Anemia suspected. Symptoms include tiredness, pale skin and dizziness. Care: iron-rich diet and doctor advice.";
+ else if(s.includes('migraine')) r="Migraine detected. Symptoms include severe headache with nausea or light sensitivity. Care: rest in dark room and medical guidance.";
+ else if(s.includes('arthritis')) r="Joint problem detected. Symptoms include pain and stiffness. Care: light exercise, warm compress and doctor advice.";
+ else if(s.includes('mental')) r="Mental health concern detected. Stress, anxiety or low mood can affect health. Care: talk to someone you trust and seek professional help.";
+ else if(s.includes('covid')) r="COVID-like symptoms detected. Symptoms include fever, cough and body pain. Care: isolate, test if needed and consult doctor.";
+ else r="No clear match found. 💡 Try clicking a symptom below or use words like: <span class='suggestion' onclick=\"quickFill('bukhar')\">bukhar</span>, <span class='suggestion' onclick=\"quickFill('pet dard')\">pet dard</span>, <span class='suggestion' onclick=\"quickFill('ulti')\">ulti</span>, <span class='suggestion' onclick=\"quickFill('kamzori')\">kamzori</span>, <span class='suggestion' onclick=\"quickFill('sir dard')\">sir dard</span>";
+ document.getElementById('symptomResult').innerText=r;
+}
+
+function checkReports(){
+ let r="";
+ let bp=document.getElementById('bp').value;
+ let hb=parseFloat(document.getElementById('hb').value);
+ let tsh=parseFloat(document.getElementById('tsh').value);
+ if(bp){
+  let p=bp.split('/');
+  if(p[0]<90||p[1]<60) r+="Low BP detected. ";
+  else if(p[0]>140||p[1]>90) r+="High BP detected. ";
+  else r+="BP is normal. ";
+ }
+ if(hb){
+  if(hb<12) r+="Anemia suspected (low hemoglobin). ";
+  else r+="Hemoglobin normal. ";
+ }
+ if(tsh){
+  if(tsh<0.4) r+="Low TSH (Hyperthyroid). ";
+  else if(tsh>4.0) r+="High TSH (Hypothyroid). ";
+  else r+="Thyroid normal. ";
+ }
+ document.getElementById('reportResult').innerText=r||"Please enter report values";
+}
+
+function calcBMI(){
+ let h=document.getElementById('height').value/100;
+ let w=document.getElementById('weight').value;
+ if(!h||!w)return;
+ let bmi=(w/(h*h)).toFixed(2);
+ let r="BMI: "+bmi+" ";
+ if(bmi<18.5) r+="Underweight";
+ else if(bmi<25) r+="Normal";
+ else r+="Overweight";
+ document.getElementById('bmiResult').innerText=r;
+}
+
+function helpUser(){
+ let q=normalize(document.getElementById('question').value);
+ let a="Yeh ek basic health guide hai. Serious problem me doctor se salah lein.";
+ if(q.includes('fever')) a="Bukhar me rest karein, pani aur ORS piyen. Agar bukhar 2 din se zyada rahe to doctor ko dikhayein.";
+ else if(q.includes('stomach')) a="Pet dard me halka khana khayein, spicy food avoid karein.";
+ else if(q.includes('pcos')) a="PCOS me lifestyle change bahut zaruri hai. Regular walk, healthy khana aur doctor ki salah lein.";
+ else if(q.includes('period')) a="Period problem ke liye balanced diet aur medical advice zaruri hai.";
+ else if(q.includes('weakness')) a="General weakness me proper meals, fruits, pani aur rest zaruri hai.";
+ document.getElementById('helpResult').innerText=a;
+}
+</script>
+</body>
+</html>
